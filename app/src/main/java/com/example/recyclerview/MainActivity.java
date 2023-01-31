@@ -5,14 +5,18 @@ import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -59,9 +63,6 @@ public class MainActivity extends AppCompatActivity implements InterfaceGestionC
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if(item.getItemId() == R.id.itmAjouter)
         {
-            /*Produit p = new Produit("Nouveau", "Nouveau", 150);
-            adapterListe.ajouterProduit(p);*/
-            adapterListe.supprimer(0);
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -84,11 +85,33 @@ public class MainActivity extends AppCompatActivity implements InterfaceGestionC
 
     @Override
     public void gestionClic(Produit p, int position) {
-        Intent intent = new Intent(this, SecondeActivity.class);
-        intent.putExtra("nom", p.getNom());
-        intent.putExtra("marque", p.getMarque());
-        intent.putExtra("prix", p.getPrix()+"$");
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setCancelable(false);
+        builder.setTitle("Produit choisi");
 
-        resultLauncher.launch(intent);
+        builder.setPositiveButton("Terminer", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+
+        View view = getLayoutInflater().inflate(R.layout.layout_produit,null);
+
+        builder.setView(view);
+
+        AlertDialog alertDialog1 = builder.create();
+
+        TextView tvN = view.findViewById(R.id.tvNom);
+        TextView tvM = view.findViewById(R.id.tvMarque);
+        TextView tvP = view.findViewById(R.id.tvPrix);
+
+        tvN.setText(p.getNom());
+        tvM.setText(p.getMarque());
+        tvP.setText(p.getPrix() + "$");
+
+        alertDialog1.show();
+
+
     }
 }
