@@ -1,33 +1,51 @@
 package com.example.recyclerview;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements InterfaceGestionClic {
 
     RecyclerView rvliste;
     AdapterListe adapterListe;
 
+    ActivityResultLauncher<Intent> resultLauncher;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        resultLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                new ActivityResultCallback<ActivityResult>() {
+                    @Override
+                    public void onActivityResult(ActivityResult result) {
+
+                    }
+                }
+        );
+
         rvliste = findViewById(R.id.rvListe);
         rvliste.setHasFixedSize(true);
         rvliste.setLayoutManager(new LinearLayoutManager(this));
 
-        adapterListe = new AdapterListe(generer());
+        adapterListe = new AdapterListe(generer(), this );
+
         rvliste.setAdapter(adapterListe);
     }
 
@@ -62,5 +80,15 @@ public class MainActivity extends AppCompatActivity {
         liste.add(new Produit("Ordinateur portable", "Acer", 850));
 
         return liste;
+    }
+
+    @Override
+    public void gestionClic(Produit p, int position) {
+        Intent intent = new Intent(this, SecondeActivity.class);
+        intent.putExtra("nom", p.getNom());
+        intent.putExtra("marque", p.getMarque());
+        intent.putExtra("prix", p.getPrix()+"$");
+
+        resultLauncher.launch(intent);
     }
 }

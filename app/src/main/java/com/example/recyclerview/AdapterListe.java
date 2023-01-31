@@ -15,10 +15,12 @@ import java.util.List;
 public class AdapterListe extends RecyclerView.Adapter<AdapterListe.MonViewHolder>
 {
     private List<Produit> liste;
+    InterfaceGestionClic gestionClic;
 
-    public AdapterListe(List<Produit> l)
+    public AdapterListe(List<Produit> l, InterfaceGestionClic interfaceGestionClic)
     {
         liste = l;
+        gestionClic = interfaceGestionClic;
     }
 
     @NonNull
@@ -71,7 +73,7 @@ public class AdapterListe extends RecyclerView.Adapter<AdapterListe.MonViewHolde
                 @Override
                 public void onClick(View v) {
                     int index = getLayoutPosition();
-                    supprimer(index);
+                    gestionClic.gestionClic(liste.get(index), index);
                 }
             });
         }
